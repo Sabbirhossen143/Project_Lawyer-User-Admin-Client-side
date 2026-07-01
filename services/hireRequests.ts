@@ -1,66 +1,52 @@
-import axios from "axios";
+import axiosPublic from "@/lib/axios";
 
-export const createRequest =
-  async (data: any) => {
-    const res = await axios.post(
-      "http://localhost:5000/hire-requests",
-      data
-    );
-
-    return res.data;
-  };
-
-export const getRequests =
-  async () => {
-    const res = await axios.get(
-      "http://localhost:5000/hire-requests"
-    );
-
-    return res.data;
-  };
-
-  export const deleteRequest = async (
-  id: string
-) => {
-  const res = await axios.delete(
-    `http://localhost:5000/hire-requests/${id}`
+export const createRequest = async (data: any) => {
+  const res = await axiosPublic.post(
+    "/hire-requests",
+    data
   );
-
   return res.data;
 };
 
-  export const updateRequestStatus =
-  async (
-    id: string,
-    status: string
-  ) => {
-    const res = await axios.patch(
-      `http://localhost:5000/hire-requests/${id}`,
-      { status }
-    );
+export const getRequests = async () => {
+  const res = await axiosPublic.get(
+    "/hire-requests"
+  );
+  return res.data;
+};
 
-    return res.data;
-  };
+export const deleteRequest = async (id: string) => {
+  const res = await axiosPublic.delete(
+    `/hire-requests/${id}`
+  );
+  return res.data;
+};
 
-  export const getUserRequests =
-  async (email: string) => {
+export const updateRequestStatus = async (
+  id: string,
+  status: string
+) => {
+  const res = await axiosPublic.patch(
+    `/hire-requests/${id}`,
+    { status }
+  );
+  return res.data;
+};
 
-    const res =
-      await axios.get(
-        `http://localhost:5000/hire-requests/user/${email}`
-      );
-
-    return res.data;
-  };
-
-  export const getLawyerRequests = async (
+export const getUserRequests = async (
   email: string
 ) => {
-
-  const res = await axios.get(
-    `http://localhost:5000/hire-requests/lawyer/${email}`
+  const res = await axiosPublic.get(
+    `/hire-requests/user/${email}`
   );
-
   return res.data;
+};
 
+export const getLawyerRequests = async (
+  email: string
+) => {
+  const res = await axiosPublic.get(
+    `/hire-requests/lawyer/${email}`
+  );
+  return res.data;
 };
