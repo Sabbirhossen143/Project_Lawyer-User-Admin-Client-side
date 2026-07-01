@@ -11,6 +11,7 @@ import {
   useEffect,
   useRef,
 } from "react";
+import { FaSpinner } from "react-icons/fa";
 
 export default function ManageRequestsPage() {
 
@@ -128,12 +129,13 @@ async () => {
 }, []);
 
   if (isLoading) {
-    return (
-      <p className="text-white p-8">
-        Loading...
-      </p>
-    );
-  }
+      return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 w-full">
+          <FaSpinner className="animate-spin text-amber-500" size={32} />
+          <p className="text-slate-400 text-sm font-medium">Loading your requests...</p>
+        </div>
+      );
+    }
 
   return (
   <div className="p-4 md:p-8">
