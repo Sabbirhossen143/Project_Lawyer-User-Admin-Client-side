@@ -22,7 +22,16 @@ export default function BrowseLawyersPage() {
   queryFn: getLawyers,
   });
 
-  const specialties = ["all", ...Array.from(new Set(lawyers.map((l: any) => l.specialty).filter(Boolean)))];
+  const specialties: string[] = [
+  "all",
+  ...(Array.from(
+    new Set(
+      lawyers
+        .map((l: any) => l.specialty)
+        .filter(Boolean)
+    )
+  ) as string[]),
+];
   const filteredLawyers = lawyers.filter((l: any) => {
     const matchesSearch = l.name.toLowerCase().includes(search.toLowerCase()) || l.specialty.toLowerCase().includes(search.toLowerCase());
     return specialty === "all" ? matchesSearch : matchesSearch && l.specialty === specialty;
@@ -90,9 +99,13 @@ useEffect(() => {
             {openFilter && (
               <div className="absolute top-full mt-2 w-full bg-[#0B1220] border border-slate-700 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-60 overflow-y-auto">
                 {specialties.map((item) => (
-                  <button key={item} onClick={() => { setSpecialty(item); setOpenFilter(false); }} className="w-full text-left px-5 py-3 hover:bg-amber-500/10 text-slate-300 hover:text-amber-400 text-xs md:text-sm">
-                    {item === "all" ? "All Specialties" : item}
-                  </button>
+                  <button 
+  key={item as string} 
+  onClick={() => { setSpecialty(item); setOpenFilter(false); }} 
+  className="w-full text-left px-5 py-3 hover:bg-amber-500/10 text-slate-300 hover:text-amber-400 text-xs md:text-sm"
+>
+  {item === "all" ? "All Specialties" : item}
+</button>
                 ))}
               </div>
             )}

@@ -35,7 +35,7 @@ export default function CommentsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {comments.map((comment) => (
+          {comments.map((comment: any) => (
             <div key={comment._id} className="bg-[#0B1220]/50 backdrop-blur-md border border-amber-500/10 rounded-3xl p-5 hover:border-amber-500/30 transition-all duration-300">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold text-white truncate">{comment.lawyerName}</h3>

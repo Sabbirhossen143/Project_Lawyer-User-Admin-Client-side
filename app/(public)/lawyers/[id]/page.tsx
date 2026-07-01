@@ -58,16 +58,14 @@ const { user } = useContext(AuthContext);
     ),
 });
 
-const averageRating =
-comments.length
-? (
-    comments.reduce(
-      (sum, item) =>
-        sum + item.rating,
-      0
-    ) / comments.length
-  ).toFixed(1)
-: "0";
+const averageRating = comments.length
+  ? (
+      comments.reduce(
+        (sum: number, item: { rating: number }) => sum + item.rating,
+        0
+      ) / comments.length
+    ).toFixed(1)
+  : "0";
 
 const relatedLawyers =
   lawyers
