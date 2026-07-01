@@ -5,11 +5,12 @@ import { getLawyerRequests, updateRequestStatus } from "@/services/hireRequests"
 import { useState, useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
+import { FaSpinner } from "react-icons/fa";
 
 export default function LawyerHiringHistoryPage() {
   const { user } = useContext(AuthContext);
 
-  const { data: requests = [], refetch } = useQuery({
+  const { data: requests = [], refetch, isLoading } = useQuery({
     queryKey: ["lawyerRequests", user?.email],
     queryFn: () => getLawyerRequests(user!.email!),
     enabled: !!user?.email,
@@ -27,6 +28,15 @@ export default function LawyerHiringHistoryPage() {
 
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [openProfileModal, setOpenProfileModal] = useState(false);
+
+  if (isLoading) {
+      return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 w-full">
+          <FaSpinner className="animate-spin text-amber-500" size={32} />
+          <p className="text-slate-400 text-sm font-medium">Loading requests history...</p>
+        </div>
+      );
+  }
 
   return (
     <div

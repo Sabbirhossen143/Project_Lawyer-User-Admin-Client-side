@@ -6,7 +6,7 @@ import axiosPublic from "@/lib/axios";
 import { FaGoogle } from "react-icons/fa";
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-
+import toast from "react-hot-toast";
 
 export default function LoginForm() {
 
@@ -47,6 +47,8 @@ const {
       password
     );
 
+    toast.success("Welcome Back!");
+
     // JWT Request
     const res =
       await axiosPublic.post(
@@ -83,9 +85,43 @@ if (role === "admin") {
   router.push("/");
 }
 
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+
+  if (
+    error.code ===
+    "auth/invalid-credential"
+  ) {
+    toast.error(
+      "Invalid Email or Password"
+    );
   }
+
+  else if (
+    error.code ===
+    "auth/user-not-found"
+  ) {
+    toast.error(
+      "Email Not Found"
+    );
+  }
+
+  else if (
+    error.code ===
+    "auth/wrong-password"
+  ) {
+    toast.error(
+      "Wrong Password"
+    );
+  }
+
+  else {
+    toast.error(
+      error.message
+    );
+  }
+
+  console.log(error);
+}
 };
 
 const handleGoogleLogin =
