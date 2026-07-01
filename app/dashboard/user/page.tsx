@@ -30,7 +30,7 @@ export default function DashboardPage() {
   const { user } = useContext(AuthContext);
   const [openNotification, setOpenNotification] = useState(false);
   const [lastNotificationCount, setLastNotificationCount] = useState(0);
-
+  
   const { data: comments = [] } = useQuery({
     queryKey: ["user-comments", user?.email],
     enabled: !!user?.email,
@@ -102,20 +102,6 @@ const rawNotifications = [
 const [notificationData, setNotificationData] = useState<any[]>([]);
 
 const [deletedNotifications, setDeletedNotifications] = useState<string[]>([]);
-
-useEffect(() => {
-  if (
-    lastNotificationCount > 0 &&
-    notificationData.length > lastNotificationCount
-  ) {
-    const audio = new Audio("/sounds/notification.wav");
-
-    audio.volume = 0.7;
-    audio.play().catch(() => {});
-  }
-
-  setLastNotificationCount(notificationData.length);
-}, [notificationData]);
 
 useEffect(() => {
   const savedRead = JSON.parse(

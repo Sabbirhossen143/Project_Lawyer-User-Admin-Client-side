@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "@/contexts/AuthContext";
 import { getUserComments, deleteComment, updateComment } from "@/services/comments";
 import toast from "react-hot-toast";
+import { FaSpinner } from "react-icons/fa";
 
 export default function CommentsPage() {
   const [editModal, setEditModal] = useState<any>(null);
@@ -12,11 +13,20 @@ export default function CommentsPage() {
   const [updatedText, setUpdatedText] = useState("");
   const { user } = useContext(AuthContext);
 
-  const { data: comments = [], refetch } = useQuery({
+  const { data: comments = [], refetch, isLoading } = useQuery({
     queryKey: ["user-comments", user?.email],
     enabled: !!user?.email,
     queryFn: () => getUserComments(user?.email || ""),
   });
+
+  if (isLoading) {
+      return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 w-full">
+          <FaSpinner className="animate-spin text-amber-500" size={32} />
+          <p className="text-slate-400 text-sm font-medium">Loading Comments...</p>
+        </div>
+      );
+    }
 
   return (
     <div className="p-4 sm:p-8 max-w-7xl mx-auto">
