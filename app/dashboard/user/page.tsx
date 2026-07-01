@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState, useEffect } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { getUserRequests } from "@/services/hireRequests";
@@ -20,13 +20,16 @@ import {
   FaClock,
   FaTimesCircle,
   FaBell,
-  FaCog,
+  FaEdit,
   FaInbox,
   FaArrowRight,
+  FaSpinner,
 } from "react-icons/fa";
 
 export default function DashboardPage() {
   const { user } = useContext(AuthContext);
+  const [openNotification, setOpenNotification] = useState(false);
+  const [lastNotificationCount, setLastNotificationCount] = useState(0);
 
   const { data: comments = [] } = useQuery({
     queryKey: ["user-comments", user?.email],
@@ -81,10 +84,104 @@ export default function DashboardPage() {
     ? ["rgba(255,255,255,0.08)"] 
     : ["#22c55e", "#f59e0b", "#ef4444"];
 
-  if (isLoading) {
+const rawNotifications = [
+  ...requests.map((request: any) => ({
+    id: request._id,
+    title: "Hiring Request Update",
+    message: `Your request to ${request.lawyerName} is ${request.status}`,
+    time: request.createdAt,
+  })),
+  ...comments.map((comment: any) => ({
+    id: comment._id,
+    title: "New Comment",
+    message: comment.comment,
+    time: comment.createdAt,
+  })),
+];
+
+const [notificationData, setNotificationData] = useState<any[]>([]);
+
+const [deletedNotifications, setDeletedNotifications] = useState<string[]>([]);
+
+useEffect(() => {
+  if (
+    lastNotificationCount > 0 &&
+    notificationData.length > lastNotificationCount
+  ) {
+    const audio = new Audio("/sounds/notification.wav");
+
+    audio.volume = 0.7;
+    audio.play().catch(() => {});
+  }
+
+  setLastNotificationCount(notificationData.length);
+}, [notificationData]);
+
+useEffect(() => {
+  const savedRead = JSON.parse(
+    localStorage.getItem("userReadNotifications") || "[]"
+  );
+
+  const savedDeleted = JSON.parse(
+    localStorage.getItem("userDeletedNotifications") || "[]"
+  );
+
+  setDeletedNotifications(savedDeleted);
+
+  setNotificationData(
+    rawNotifications
+      .filter((item) => !savedDeleted.includes(item.id))
+      .map((item) => ({
+        ...item,
+        read: savedRead.includes(item.id),
+      }))
+  );
+}, [requests, comments]);
+
+const unreadCount = notificationData.filter(
+  (item) => !item.read
+).length;
+
+const markAsRead = (id: string) => {
+  const updated = notificationData.map((item) =>
+    item.id === id ? { ...item, read: true } : item
+  );
+
+  setNotificationData(updated);
+
+  localStorage.setItem(
+    "userReadNotifications",
+    JSON.stringify(
+      updated.filter((x) => x.read).map((x) => x.id)
+    )
+  );
+};
+
+const deleteNotification = (
+  id: string,
+  e: React.MouseEvent
+) => {
+  e.stopPropagation();
+
+  const updatedDeleted = [...deletedNotifications, id];
+
+  setDeletedNotifications(updatedDeleted);
+
+  localStorage.setItem(
+    "userDeletedNotifications",
+    JSON.stringify(updatedDeleted)
+  );
+
+  setNotificationData((prev) =>
+    prev.filter((item) => item.id !== id)
+  );
+};
+
+if (isLoading) {
     return (
-      <div className="min-h-[50vh] flex justify-center items-center">
-        <span className="loading loading-spinner loading-lg text-amber-500"></span>
+      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 w-full">
+        <FaSpinner className="animate-spin text-amber-500" size={32} />
+        <p className="text-slate-400 text-sm font-medium">Loading dashboard...</p>
       </div>
     );
   }
@@ -133,13 +230,29 @@ export default function DashboardPage() {
           <div className="h-6 w-[1px] bg-white/[0.08] hidden xs:block shrink-0"></div>
           
           <div className="flex gap-1.5 items-center shrink-0">
-            <Link href="/dashboard/user/notifications" className="p-2 bg-white/[0.02] hover:bg-white/[0.08] border border-white/[0.05] rounded-xl transition text-slate-400 hover:text-white">
-              <FaBell size={13} />
-            </Link>
-            <Link href="/dashboard/user/profile" className="p-2 bg-white/[0.02] hover:bg-white/[0.08] border border-white/[0.05] rounded-xl transition text-slate-400 hover:text-white">
-              <FaCog size={13} />
-            </Link>
-          </div>
+  {/* Notification Button */}
+  <button
+    onClick={() => setOpenNotification(true)} 
+    className="relative p-2 bg-white/[0.02] hover:bg-white/[0.08] border border-white/[0.05] rounded-xl transition text-slate-400 hover:text-white"
+  >
+    <FaBell size={13} />
+    {/* Notification Badge */}
+    {unreadCount > 0 && (
+      <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center animate-pulse shadow-lg">
+        {unreadCount}
+      </span>
+    )}
+  </button>
+  
+  {/* Update Profile Link with Edit Icon */}
+  <Link 
+    href="/dashboard/user/update-profile" 
+    className="p-2 bg-white/[0.02] hover:bg-white/[0.08] border border-white/[0.05] rounded-xl transition text-slate-400 hover:text-white"
+    title="Edit Profile"
+  >
+    <FaEdit size={13} />
+  </Link>
+</div>
         </div>
       </div>
 
@@ -299,6 +412,132 @@ export default function DashboardPage() {
 
         </div>
       </div>
+
+      {openNotification && (
+  <div
+    className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6"
+    onClick={() => setOpenNotification(false)}
+  >
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="
+      w-full
+      max-w-5xl
+      bg-[#0b1120]
+      border border-white/10
+      rounded-[32px]
+      shadow-[0_30px_100px_rgba(0,0,0,0.8)]
+      overflow-hidden
+      max-h-[90vh]
+      flex flex-col
+      "
+    >
+      {/* Header */}
+      <div className="px-6 py-5 border-b border-white/5 flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <FaBell className="text-amber-400 text-xl" />
+
+          <div>
+            <h2 className="text-white text-xl font-black">
+              Notification Center
+            </h2>
+
+            <p className="text-slate-500 text-xs">
+              {unreadCount} unread notifications
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={() => setOpenNotification(false)}
+          className="h-10 w-10 rounded-xl bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition"
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* Body */}
+      <div
+        className="
+        p-4 sm:p-6
+        overflow-y-auto
+        grid
+        grid-cols-1
+        md:grid-cols-2
+        gap-4
+        "
+      >
+        {notificationData.length > 0 ? (
+          notificationData.map((n: any) => (
+            <div
+              key={n.id}
+              onClick={() => markAsRead(n.id)}
+              className={`
+                relative
+                rounded-3xl
+                p-5
+                cursor-pointer
+                transition-all
+                duration-300
+                border
+
+                ${
+                  n.read
+                    ? "bg-white/[0.02] border-white/5 opacity-70"
+                    : "bg-amber-500/[0.05] border-amber-500/20 shadow-lg shadow-amber-500/5 hover:border-amber-500/50"
+                }
+              `}
+            >
+              {!n.read && (
+                <span className="absolute top-4 right-12 w-3 h-3 rounded-full bg-amber-400 animate-pulse" />
+              )}
+
+              <button
+                onClick={(e) => deleteNotification(n.id, e)}
+                className="
+                absolute
+                top-4
+                right-4
+                text-slate-500
+                hover:text-red-400
+                transition
+                "
+              >
+                <FaTimesCircle />
+              </button>
+
+              <h3
+                className={`font-bold text-sm ${
+                  n.read
+                    ? "text-slate-400"
+                    : "text-white"
+                }`}
+              >
+                {n.title}
+              </h3>
+
+              <p className="text-slate-400 text-xs mt-2 leading-relaxed">
+                {n.message}
+              </p>
+
+              <p className="text-slate-600 text-[10px] mt-4">
+                {new Date(n.time).toLocaleString()}
+              </p>
+            </div>
+          ))
+        ) : (
+          <div className="col-span-2 py-20 text-center">
+            <FaInbox className="mx-auto text-slate-700 text-3xl mb-3" />
+
+            <p className="text-slate-500">
+              No notifications found
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+)}
 
     </div>
   );
