@@ -68,6 +68,11 @@ const {
     `/users/role/${email}`
   );
 
+  console.log(
+  "ROLE RESPONSE:",
+  roleRes.data
+);
+
 const role =
   roleRes.data.role;
 

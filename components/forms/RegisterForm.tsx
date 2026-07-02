@@ -14,7 +14,7 @@ import {
 
 
 export default function RegisterForm() {
-const { createUser, updateUserProfile } = useAuth();
+const { createUser, updateUserProfile, logoutUser,} = useAuth();
 const [role, setRole] = useState("user");
 const router = useRouter();
 const [error, setError] = useState("");
@@ -101,6 +101,8 @@ try {
     lawyerInfo
   );
 }
+
+await logoutUser();
 
   toast.success(
   `Welcome ${name}! Registration Successful`
