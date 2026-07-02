@@ -87,40 +87,17 @@ if (role === "admin") {
 
   } catch (error: any) {
 
-  if (
-    error.code ===
-    "auth/invalid-credential"
-  ) {
-    toast.error(
-      "Invalid Email or Password"
-    );
-  }
+  toast.remove();
 
-  else if (
-    error.code ===
-    "auth/user-not-found"
-  ) {
-    toast.error(
-      "Email Not Found"
-    );
+  if (error.code === "auth/invalid-credential") {
+    toast.error("Invalid Email or Password", {
+      id: "login-error",
+    });
+  } else {
+    toast.error("Something went wrong", {
+      id: "login-error",
+    });
   }
-
-  else if (
-    error.code ===
-    "auth/wrong-password"
-  ) {
-    toast.error(
-      "Wrong Password"
-    );
-  }
-
-  else {
-    toast.error(
-      error.message
-    );
-  }
-
-  console.log(error);
 }
 };
 

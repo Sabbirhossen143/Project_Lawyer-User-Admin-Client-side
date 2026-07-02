@@ -4,7 +4,6 @@ import HeroProvider from "@/providers/HeroUIProvider";
 import QueryProvider from "@/providers/QueryProvider";
 import ThemeProvider from "@/providers/ThemeProvider";
 import AuthProvider from "@/contexts/AuthContext";
-import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -23,7 +22,6 @@ export default function RootLayout({
             <QueryProvider>
               <AuthProvider>
                 {children}
-                <Toaster position="top-right" />
               </AuthProvider>
             </QueryProvider>
           </HeroProvider>
