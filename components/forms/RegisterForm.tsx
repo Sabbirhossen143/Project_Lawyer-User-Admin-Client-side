@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 import axiosPublic from "@/lib/axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import {
   FaGavel,
   FaUserTie,
@@ -14,7 +16,7 @@ import {
 export default function RegisterForm() {
 const { createUser, updateUserProfile } = useAuth();
 const [role, setRole] = useState("user");
-
+const router = useRouter();
 const [error, setError] = useState("");
 const [loading, setLoading] = useState(false);
 
@@ -48,15 +50,15 @@ const confirmPassword = (
 
 try {
   if (password !== confirmPassword) {
-    setError("Passwords do not match");
+    toast.error("Passwords do not match");
     setLoading(false);
     return;
   }
 
   if (password.length < 6) {
-    setError(
-      "Password must be at least 6 characters"
-    );
+    toast.error(
+  "Password must be at least 6 characters"
+  );
     setLoading(false);
     return;
   }
@@ -100,11 +102,26 @@ try {
   );
 }
 
-  alert("Registration Successful");
+  toast.success(
+  `Welcome ${name}! Registration Successful`
+);
 
   form.reset();
+  router.push("/login");
 } catch (err: any) {
-  setError(err.message);
+
+  if (
+    err.code ===
+    "auth/email-already-in-use"
+  ) {
+    toast.error(
+      "Email already exists"
+    );
+  } else {
+    toast.error(
+      err.message
+    );
+  }
 } finally {
   setLoading(false);
 }
