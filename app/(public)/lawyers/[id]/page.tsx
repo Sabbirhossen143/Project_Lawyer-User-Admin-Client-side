@@ -170,7 +170,14 @@ const relatedLawyers =
               </div>
 
               <p className="text-slate-400 mt-4 md:mt-8 leading-relaxed text-sm md:text-base">{lawyer.bio}</p>
-              <button onClick={() => setOpenModal(true)} className="mt-6 md:mt-8 w-full py-3 md:py-4 rounded-xl md:rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold transition-all">
+              <button onClick={() => {
+    if (!user) {
+      toast.error(
+        "Please login first"
+      );
+      return;
+    }
+    setOpenModal(true)}} className="mt-6 md:mt-8 w-full py-3 md:py-4 rounded-xl md:rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold transition-all">
                 Hire This Expert
               </button>
             </div>
@@ -195,7 +202,14 @@ const relatedLawyers =
     </div>
 
     <button
-      onClick={() => setShowReviewForm(!showReviewForm)}
+      onClick={() => {
+    if (!user) {
+      toast.error(
+        "Please login first"
+      );
+      return;
+      }
+    setShowReviewForm(!showReviewForm)}}
       className="group flex items-center justify-center gap-2 px-5 py-2 text-[13px] font-semibold rounded-xl bg-slate-800 border border-slate-700 text-slate-200 hover:border-amber-500/50 hover:text-amber-400 transition-all duration-300 w-full md:w-auto"
     >
       <span className="text-lg group-hover:rotate-12 transition-transform">✍️</span>
@@ -499,6 +513,13 @@ userEmail:
           </button>
           <button
             onClick={async () => {
+              if (!user) {
+    toast.error(
+      "Please login first to submit a request"
+    );
+    return;
+  }
+
               if (!name || !email || !caseType) { alert("Please fill all fields"); return; }
               const requestData = { lawyerId: lawyer._id, lawyerName: lawyer.name, lawyerEmail: lawyer.email, specialty: lawyer.specialty, fee: lawyer.fee, userName: name, userEmail: email, caseType, message, status: "Pending", createdAt: new Date() };
               await createRequest(requestData);
