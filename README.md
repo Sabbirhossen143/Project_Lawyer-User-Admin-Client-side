@@ -1,37 +1,118 @@
-[This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ⚖️ LegalEase — Online Lawyer Hiring Platform
 
-## Getting Started
+LegalEase is a full-stack online lawyer hiring platform that connects clients with professional lawyers through a modern, secure, and user-friendly web application.
 
-First, run the development server:
+Users can discover lawyers, view detailed profiles, submit hiring requests, make payments, leave reviews, and track their hiring activities. Lawyers can manage their legal profiles and cases, while administrators can manage users, lawyers, transactions, and the overall platform.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌐 Live Demo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🔗 https://project-lawyer-user-admin-client-si-eight.vercel.app/
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📌 Project Overview
 
-To learn more about Next.js, take a look at the following resources:
+Finding the right legal professional can often be difficult through traditional offline methods. LegalEase provides a centralized digital platform where users can easily discover legal professionals based on their specialization and experience.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The platform provides dedicated experiences for three types of users:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- 👤 **User / Client**
+- ⚖️ **Lawyer**
+- 🛡️ **Admin**
 
-## Deploy on Vercel
+Each role has its own dashboard and permissions.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-](https://github.com/Sabbirhossen143/Project_Lawyer-User-Admin-Client-side/blob/main/README.md)
+## ✨ Key Features
+
+### 👤 User / Client
+
+- User registration and login
+- Email & password authentication
+- Google authentication
+- Browse available lawyers
+- Search lawyers
+- Filter lawyers by specialization and other criteria
+- View detailed lawyer profiles
+- Submit lawyer hiring requests
+- Make payments through Stripe
+- Track hiring/request history
+- Leave reviews and ratings
+- Comment on hired lawyers
+- View notifications
+- Responsive user dashboard
+
+---
+
+### ⚖️ Lawyer
+
+- Lawyer registration
+- Lawyer dashboard
+- Lawyer profile management
+- Add/edit legal specialization
+- Update experience and consultation fee
+- Add professional biography
+- Manage profile information
+- Publish/unpublish lawyer profile
+- View hiring requests
+- Manage cases/hiring history
+- Track client requests
+- Manage professional presence on the platform
+
+---
+
+### 🛡️ Admin
+
+- Admin dashboard
+- Manage registered users
+- Change user roles
+- Manage lawyer profiles
+- Publish/unpublish lawyer listings
+- Delete lawyer profiles
+- Manage hiring requests
+- Monitor transactions
+- View platform analytics
+- Manage system-level settings
+- Centralized platform management
+
+---
+
+## 🔐 Authentication & Authorization
+
+LegalEase implements a secure authentication system using Firebase Authentication and JWT-based authorization.
+
+### Authentication
+
+- Firebase Email/Password Authentication
+- Google Authentication
+- Secure login and registration flow
+- JWT token generation
+- Protected API requests
+
+### Role-Based Access Control
+
+The platform supports three roles:
+
+```text
+User
+ ├── Browse Lawyers
+ ├── Hire Lawyers
+ ├── Make Payments
+ ├── Reviews & Comments
+ └── Hiring History
+
+Lawyer
+ ├── Manage Profile
+ ├── Manage Legal Services
+ ├── View Requests
+ └── Manage Cases
+
+Admin
+ ├── Manage Users
+ ├── Manage Lawyers
+ ├── Manage Requests
+ ├── Manage Transactions
+ └── Analytics
